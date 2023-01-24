@@ -1,0 +1,15 @@
+{% extends 'layout.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ base_path() }}/public/includes/css/home.css">
+{% endblock %}
+
+{% block content %}
+<h1>Hello {{ name }}!</h1>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ base_path() }}/public/includes/js/home.js" type="module"></script>
+{% endblock %}
