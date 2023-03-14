@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Exception;
 use PDO;
+use PDOStatement;
 
 class Database
 {
@@ -14,7 +14,7 @@ class Database
         $this->connection = $connection;
     }
 
-    public function setBinds($statement, $binds = array())
+    private function setBinds($statement, $binds = array()): PDOStatement
     {
         foreach ($binds as $key => $value) {
             $statement->bindValue($key, $value);
@@ -23,7 +23,7 @@ class Database
         return $statement;
     }
 
-    public function dataPrepare($query, $binds = [], $fetchAll = true)
+    public function dataPrepare($query, $binds = [], $fetchAll = true): array
     {
         $statement = $this->connection->prepare($query);
         $this->setBinds($statement, $binds);
@@ -34,10 +34,14 @@ class Database
 
         $result = $fetchAll ? $statement->fetchAll(PDO::FETCH_ASSOC) : $statement->fetch(PDO::FETCH_ASSOC);
 
+        if (!$result) {
+            return [];
+        }
+
         return $result;
     }
 
-    public function dataQuery($query, $fetchAll = true)
+    public function dataQuery($query, $fetchAll = true): array
     {
         $statement = $this->connection->query($query);
 
@@ -47,10 +51,14 @@ class Database
 
         $result = $fetchAll ? $statement->fetchAll(PDO::FETCH_ASSOC) : $statement->fetch(PDO::FETCH_ASSOC);
 
+        if (!$result) {
+            return [];
+        }
+
         return $result;
     }
 
-    public function directPrepare($query, $binds = [])
+    public function directPrepare($query, $binds = []): bool
     {
         $statement = $this->connection->prepare($query);
         $this->setBinds($statement, $binds);
@@ -60,7 +68,7 @@ class Database
         return $result;
     }
 
-    public function directQuery($query)
+    public function directQuery($query): bool
     {
         $statement = $this->connection->query($query);
 

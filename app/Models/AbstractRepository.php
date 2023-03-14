@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Models;
 
 use PDO;
@@ -9,8 +7,8 @@ use App\Services\Database;
 
 abstract class AbstractRepository
 {
-    private $database;
-    private $tableName;
+    protected $database;
+    protected $tableName;
 
     public function __construct(PDO $connection)
     {
@@ -53,26 +51,50 @@ abstract class AbstractRepository
     public function selectWhere(string $condition = "1 = 1", array $conditionBinds = [], string $columns = "*", bool $fetchAll = true)
     {
         $query = "SELECT $columns FROM $this->tableName WHERE $condition";
-
         $data = $this->database->dataPrepare($query, $conditionBinds, $fetchAll);
 
         return $data;
     }
 
-    public function insert(array $object = [])
+    public function insert($object = [], $onDuplicateKeys = false)
     {
-        $columns = implode(", ", array_keys($object));
+        $columnNames = array_keys($object);
+        $columns = implode(", ", $columnNames);
+
         $enumeratedBinds = $this->enumerateColumnValues($object);
+
         $columnBindNumbers = implode(", ", array_keys($enumeratedBinds));
 
         $query = "INSERT INTO $this->tableName ($columns) VALUES ($columnBindNumbers)";
+
+        if ($onDuplicateKeys) {
+            $columnsArray = [];
+            $arraySize = count($columnNames);
+
+            $counter = 1;
+            foreach ($enumeratedBinds as $key => $value) {
+                $enumeratedBinds[':' . ($arraySize + $counter)] = $value;
+                $counter++;
+            }
+
+            $columnNumbers = array_keys($enumeratedBinds);
+
+            for ($i = 0; $i < $arraySize; $i++) {
+                $column = $columnNames[$i] . ' = ' . $columnNumbers[$i + $arraySize];
+                array_push($columnsArray, $column);
+            }
+
+            $columnValues = implode(', ', $columnsArray);
+
+            $query .= " ON DUPLICATE KEY UPDATE $columnValues";
+        }
 
         $result = $this->database->directPrepare($query, $enumeratedBinds);
 
         return $result;
     }
 
-    public function update(array $object = [])
+    public function update($object = [])
     {
         $columnNames = array_keys($object);
         $enumeratedBinds = $this->enumerateColumnValues($object);
@@ -96,7 +118,7 @@ abstract class AbstractRepository
         return $result;
     }
 
-    public function delete(string $condition = '0 > 1', array $conditionBinds = [])
+    public function delete($condition = '0 > 1', $conditionBinds = [])
     {
         $cmd = "DELETE FROM $this->tableName WHERE $condition";
 
