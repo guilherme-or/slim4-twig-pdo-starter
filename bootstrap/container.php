@@ -23,6 +23,11 @@ $definitions = [
 
         $twig = Twig::create($path, $options);
 
+        $twig->getEnvironment()->addFunction(new \Twig\TwigFunction('assets', function ($filePath = '') {
+            $assetsFolderPath = BASE_PATH . '/public/assets';
+            return $assetsFolderPath . '/' . $filePath;
+        }));
+
         return $twig;
     },
 
