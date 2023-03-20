@@ -49,12 +49,15 @@ class __TwigTemplate_1368aa83e2c4e6b040a0a059f73c9c710c5105d8dbd9378bcaf00660176
         $this->displayBlock('title', $context, $blocks);
         echo " | Starter</title>
 
-    <link rel=\"shortcut icon\" href=\"#\">
+    <link rel=\"shortcut icon\" href=\"";
+        // line 9
+        echo twig_escape_filter($this->env, $this->env->getRuntime('Slim\Views\TwigRuntimeExtension')->getBasePath(), "html", null, true);
+        echo "/public/includes/img/slim.svg\">
 
     <link rel=\"stylesheet\" href=\"";
         // line 11
         echo twig_escape_filter($this->env, $this->env->getRuntime('Slim\Views\TwigRuntimeExtension')->getBasePath(), "html", null, true);
-        echo "/public/includes/css/libs/bootstrap.css\">
+        echo "/public/includes/libs/bootstrap/bootstrap.css\">
     <link rel=\"stylesheet\" href=\"";
         // line 12
         echo twig_escape_filter($this->env, $this->env->getRuntime('Slim\Views\TwigRuntimeExtension')->getBasePath(), "html", null, true);
@@ -73,15 +76,11 @@ class __TwigTemplate_1368aa83e2c4e6b040a0a059f73c9c710c5105d8dbd9378bcaf00660176
     <script src=\"";
         // line 18
         echo twig_escape_filter($this->env, $this->env->getRuntime('Slim\Views\TwigRuntimeExtension')->getBasePath(), "html", null, true);
-        echo "/public/includes/js/libs/bootstrap.bundle.js\"></script>
-    <script src=\"";
-        // line 19
-        echo twig_escape_filter($this->env, $this->env->getRuntime('Slim\Views\TwigRuntimeExtension')->getBasePath(), "html", null, true);
-        echo "/public/includes/js/util.js\" type=\"module\"></script>
+        echo "/public/includes/libs/bootstrap/bootstrap.bundle.js\"></script>
     ";
-        // line 20
+        // line 19
         $this->displayBlock('scripts', $context, $blocks);
-        // line 21
+        // line 20
         echo "</body>
 </html>";
     }
@@ -104,7 +103,7 @@ class __TwigTemplate_1368aa83e2c4e6b040a0a059f73c9c710c5105d8dbd9378bcaf00660176
         $macros = $this->macros;
     }
 
-    // line 20
+    // line 19
     public function block_scripts($context, array $blocks = [])
     {
         $macros = $this->macros;
@@ -122,7 +121,7 @@ class __TwigTemplate_1368aa83e2c4e6b040a0a059f73c9c710c5105d8dbd9378bcaf00660176
 
     public function getDebugInfo()
     {
-        return array (  108 => 20,  102 => 16,  96 => 13,  90 => 7,  85 => 21,  83 => 20,  79 => 19,  75 => 18,  72 => 17,  70 => 16,  66 => 14,  64 => 13,  60 => 12,  56 => 11,  49 => 7,  41 => 1,);
+        return array (  107 => 19,  101 => 16,  95 => 13,  89 => 7,  84 => 20,  82 => 19,  78 => 18,  75 => 17,  73 => 16,  69 => 14,  67 => 13,  63 => 12,  59 => 11,  54 => 9,  49 => 7,  41 => 1,);
     }
 
     public function getSourceContext()
@@ -135,17 +134,16 @@ class __TwigTemplate_1368aa83e2c4e6b040a0a059f73c9c710c5105d8dbd9378bcaf00660176
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
     <title>{% block title %}{% endblock %} | Starter</title>
 
-    <link rel=\"shortcut icon\" href=\"#\">
+    <link rel=\"shortcut icon\" href=\"{{ base_path() }}/public/includes/img/slim.svg\">
 
-    <link rel=\"stylesheet\" href=\"{{ base_path() }}/public/includes/css/libs/bootstrap.css\">
+    <link rel=\"stylesheet\" href=\"{{ base_path() }}/public/includes/libs/bootstrap/bootstrap.css\">
     <link rel=\"stylesheet\" href=\"{{ base_path() }}/public/includes/css/styles.css\">
     {% block styles %}{% endblock %}
 </head>
 <body>
     {% block content %}{% endblock %}
     
-    <script src=\"{{ base_path() }}/public/includes/js/libs/bootstrap.bundle.js\"></script>
-    <script src=\"{{ base_path() }}/public/includes/js/util.js\" type=\"module\"></script>
+    <script src=\"{{ base_path() }}/public/includes/libs/bootstrap/bootstrap.bundle.js\"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>", "layout.twig", "C:\\xampp-7\\htdocs\\slim4-twig-pdo-starter\\app\\Views\\layout.twig");

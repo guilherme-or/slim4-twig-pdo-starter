@@ -10,6 +10,6 @@ class HomeController extends AbstractController
     public function home(Request $request, Response $response, $args): Response
     {   
         $name = $args['name'] ?? 'world';
-        return $this->render($response, 'home.twig', ['name' => $name]);
+        return $this->render($response, 'home.html', ['name' => $name]);
     }
 }

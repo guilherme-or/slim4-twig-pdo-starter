@@ -13,7 +13,7 @@ return [
         'cache' => __DIR__ . '/../var/cache'
     ],
     'database' => [
-        'name' => 'test_database',
+        'name' => 'test',
         'host' => 'localhost',
         'user' => 'root',
         'password' => '',
