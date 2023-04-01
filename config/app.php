@@ -9,8 +9,6 @@ AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 $settings = $container->get('settings');
-define('BASE_PATH', $settings['app']['path']);
-
-$app->setBasePath(BASE_PATH);
+$app->setBasePath($settings['app']['path']);
 
 return $app;
