@@ -24,6 +24,10 @@ $definitions = [
         $twig = Twig::create($path, $options);
 
         $twig->getEnvironment()->addFunction(new \Twig\TwigFunction('assets', function ($filePath = '') {
+            if (!is_string($filePath)) {
+                return "";
+            }
+
             $assetsFolderPath = BASE_PATH . '/public/assets';
             return $assetsFolderPath . '/' . $filePath;
         }));
@@ -33,12 +37,12 @@ $definitions = [
 
     PDO::class => function (ContainerInterface $container): PDO {
         $settings = $container->get('settings');
-        
+
         $db = $settings['database'];
         $schema = "mysql:dbname=" . $db['name'] . ";host=" . $db['host'] . ";charset=utf8";
 
         $connection = new PDO($schema, $db['user'], $db['password']);
-        
+
         return $connection;
     }
 
