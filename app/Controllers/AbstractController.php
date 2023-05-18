@@ -40,6 +40,8 @@ abstract class AbstractController
     {
         $response = $response->withHeader('Content-Type', 'text/html; charset=utf-8');
 
+        $data['app_name'] = $_ENV['APP_NAME'];
+        $data['auto_reload'] = random_int(1, 999);
         return $this->twig->render($response, $template, $data);
     }
 
@@ -72,5 +74,23 @@ abstract class AbstractController
     protected function redirect(Response $response, string $url, int $status = 302): Response
     {
         return $response->withStatus($status)->withHeader('Location', $url);
+    }
+
+    /**
+     * Creates a error response.
+     *
+     * @param Response $response
+     * @param mixed   $body
+     * @param int      $status
+     *
+     * @return Response
+     */
+    protected function error(Response $response, mixed $body = null, int $status = 404): Response
+    {
+        if (isset($body) && $body != null) {
+            $response->getBody()->write($body);
+        }
+
+        return $response->withStatus($status);
     }
 }

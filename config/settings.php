@@ -1,21 +1,24 @@
 <?php
 
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createMutable(__DIR__ . "/../");
+$dotenv->load();
+
 return [
     'app' => [
-        'name'   => 'Slim-4, Twig and PDO Starter',
-        'path'   => '/slim4-twig-pdo-starter',
-        'env'    => 'development',
-        'debug'  => true,
-        'locale' => 'en',
+        'name'   => $_ENV['APP_NAME'],
+        'path'   => $_ENV['BASE_PATH'],
+        'debug'  => $_ENV['ENV'] == 'development' ? true : false,
     ],
     'view' => [
         'path'  => __DIR__ . '/../app/Views',
         'cache' => __DIR__ . '/../var/cache'
     ],
     'database' => [
-        'name' => 'test',
-        'host' => 'localhost',
-        'user' => 'root',
-        'password' => '',
+        'name' => $_ENV['DB_NAME'],
+        'host' => $_ENV['DB_HOST'],
+        'user' => $_ENV['DB_USER'],
+        'password' => $_ENV['DB_PASSWORD'],
     ]
 ];

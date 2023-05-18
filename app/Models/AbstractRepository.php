@@ -39,30 +39,31 @@ abstract class AbstractRepository
         return $columnValues;
     }
 
-    public function selectAll(string $columns = '*', bool $fetchAll = true)
+    public function selectAll(string $columns = '*', bool $fetchAll = true): array
     {
         $query = "SELECT $columns FROM $this->tableName";
-
         $data = $this->database->dataQuery($query, $fetchAll);
 
         return $data;
     }
 
-    public function selectWhere(string $condition = "1 = 1", array $conditionBinds = [], string $columns = "*", bool $fetchAll = true)
-    {
+    public function selectWhere(
+        string $condition = "1 = 1",
+        array $conditionBinds = [],
+        string $columns = "*",
+        bool $fetchAll = true
+    ): array {
         $query = "SELECT $columns FROM $this->tableName WHERE $condition";
         $data = $this->database->dataPrepare($query, $conditionBinds, $fetchAll);
 
         return $data;
     }
 
-    public function insert($object = [], $onDuplicateKeys = false)
+    public function insert($object = [], $onDuplicateKeys = false): bool
     {
         $columnNames = array_keys($object);
         $columns = implode(", ", $columnNames);
-
         $enumeratedBinds = $this->enumerateColumnValues($object);
-
         $columnBindNumbers = implode(", ", array_keys($enumeratedBinds));
 
         $query = "INSERT INTO $this->tableName ($columns) VALUES ($columnBindNumbers)";
@@ -94,12 +95,11 @@ abstract class AbstractRepository
         return $result;
     }
 
-    public function update($object = [])
+    public function update($object = []): bool
     {
         $columnNames = array_keys($object);
         $enumeratedBinds = $this->enumerateColumnValues($object);
         $columnBinds = array_keys($enumeratedBinds);
-
         $columnsArray = [];
 
         $condition = $columnNames[0] . ' = ' . $columnBinds[0];
@@ -110,15 +110,13 @@ abstract class AbstractRepository
         }
 
         $columns = implode(', ', $columnsArray);
-
         $query = "UPDATE $this->tableName SET $columns WHERE $condition";
-
         $result = $this->database->directPrepare($query, $enumeratedBinds);
 
         return $result;
     }
 
-    public function delete($condition = '0 > 1', $conditionBinds = [])
+    public function delete($condition = '0 > 1', $conditionBinds = []): bool
     {
         $cmd = "DELETE FROM $this->tableName WHERE $condition";
 

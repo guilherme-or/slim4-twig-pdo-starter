@@ -5,6 +5,7 @@ use Psr\Container\ContainerInterface;
 use Slim\Views\Twig;
 
 $definitions = [
+    
     'settings' => function (): array {
         return require 'settings.php';
     },
@@ -24,12 +25,12 @@ $definitions = [
         $twig = Twig::create($path, $options);
 
         $twig->getEnvironment()->addFunction(new \Twig\TwigFunction('assets', function (string $filePath = ''): string {
-            global $settings;
-            $path = $settings['app']['path'];
-
             if (!is_string($filePath)) {
                 return "";
             }
+
+            global $settings;
+            $path = $settings['app']['path'];
 
             $assetsFolderPath = $path . '/public/assets';
             return $assetsFolderPath . '/' . $filePath;
@@ -47,7 +48,7 @@ $definitions = [
         $connection = new PDO($schema, $db['user'], $db['password']);
 
         return $connection;
-    }
+    },
 
 ];
 
