@@ -5,7 +5,7 @@ namespace App\Models;
 use PDO;
 use App\Services\Database;
 
-abstract class AbstractRepository
+abstract class AbstractModel
 {
     protected $database;
     protected $tableName;
