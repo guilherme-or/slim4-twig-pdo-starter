@@ -10,10 +10,10 @@ abstract class AbstractModel
     protected $database;
     protected $tableName;
 
-    public function __construct(PDO $connection)
+    public function __construct(PDO $connection, string $tableName = null)
     {
         $this->database = new Database($connection);
-        $this->tableName = $this->getTableName($this);
+        $this->tableName = $tableName ?? $this->getTableName($this);
     }
 
     private function getTableName($instance)
