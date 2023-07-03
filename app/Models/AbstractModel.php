@@ -7,8 +7,8 @@ use App\Services\Database;
 
 abstract class AbstractModel
 {
-    protected $database;
-    protected $tableName;
+    protected Database $database;
+    protected string $tableName;
 
     public function __construct(PDO $connection, string $tableName = null)
     {
@@ -16,7 +16,7 @@ abstract class AbstractModel
         $this->tableName = $tableName ?? $this->getTableName($this);
     }
 
-    private function getTableName($instance)
+    private function getTableName(AbstractModel $instance): string
     {
         $fullName = get_class($instance);
 
@@ -26,7 +26,7 @@ abstract class AbstractModel
         return strtolower($tableName);
     }
 
-    private function enumerateColumnValues(array $object)
+    private function enumerateColumnValues(array $object): array
     {
         $columnValues = [];
         $counter = 1;
