@@ -39,6 +39,12 @@ abstract class AbstractModel
         return $columnValues;
     }
 
+    public function query(string $query = "", array $binds = [], bool $fetchAll = true): array
+    {
+        $data = $this->database->dataPrepare($query, $binds, $fetchAll);
+        return $data;
+    }
+
     public function selectAll(string $columns = '*', bool $fetchAll = true): array
     {
         $query = "SELECT $columns FROM $this->tableName";
