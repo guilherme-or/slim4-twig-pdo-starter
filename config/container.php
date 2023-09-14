@@ -5,7 +5,7 @@ use Psr\Container\ContainerInterface;
 use Slim\Views\Twig;
 
 $definitions = [
-    
+
     'settings' => function (): array {
         return require 'settings.php';
     },
@@ -42,10 +42,18 @@ $definitions = [
     PDO::class => function (ContainerInterface $container): PDO {
         $settings = $container->get('settings');
 
-        $db = $settings['database'];
-        $schema = "mysql:dbname=" . $db['name'] . ";host=" . $db['host'] . ";charset=utf8";
+        $schema = $settings['database']['engine'] . ":" .
+            ($settings['database']['path'] == ""  ?
+                "dbname=" . $settings['database']['name'] . ";host=" . $settings['database']['host'] . ";charset=utf8" :
+                __DIR__ . "/../" . $settings['database']['path']);
 
-        $connection = new PDO($schema, $db['user'], $db['password']);
+        try {
+            $connection = new PDO($schema, $settings['database']['user'], $settings['database']['password']);
+        } catch (\PDOException $th) {
+            $envExamplePath = realpath(__DIR__ . '/../.env.example');
+            $envExamplePath = !$envExamplePath ? '.env.example' : $envExamplePath;
+            die("DATABASE ERROR: Check the database environment in your \".env\" file based on \"$envExamplePath\" configuration file in your project root");
+        }
 
         return $connection;
     },

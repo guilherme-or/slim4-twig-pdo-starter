@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Controllers;
+namespace App\Utils\Abstracts;
 
+use PDO;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-
-use PDO;
 
 abstract class AbstractController
 {

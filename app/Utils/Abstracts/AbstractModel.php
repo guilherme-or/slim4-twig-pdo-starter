@@ -1,21 +1,37 @@
 <?php
 
-namespace App\Models;
+declare(strict_types=1);
+
+namespace App\Utils\Abstracts;
 
 use PDO;
-use App\Services\Database;
+use App\Utils\Database;
+use App\Utils\Statements\SelectStatement;
 
 abstract class AbstractModel
 {
-    protected Database $database;
     protected string $tableName;
+    protected const TABLE_NAME = null;
+    protected Database $database;
 
-    public function __construct(PDO $connection, string $tableName = null)
+    /**
+     * Constructor to initialize the database connection and table name.
+     *
+     * @param PDO $connection The PDO database connection.
+     */
+    public function __construct(PDO $connection)
     {
         $this->database = new Database($connection);
-        $this->tableName = $tableName ?? $this->getTableName($this);
+        $this->tableName = static::TABLE_NAME ?? $this->getTableName($this);
     }
 
+    /**
+     * Get the table name based on the class name.
+     *
+     * @param AbstractModel $instance The instance of the model.
+     *
+     * @return string The table name.
+     */
     private function getTableName(AbstractModel $instance): string
     {
         $fullName = get_class($instance);
@@ -26,6 +42,13 @@ abstract class AbstractModel
         return strtolower($tableName);
     }
 
+    /**
+     * Enumerates the column values for parameter binding.
+     *
+     * @param array $object The associative array of column values.
+     *
+     * @return array An associative array of enumerated column values.
+     */
     private function enumerateColumnValues(array $object): array
     {
         $columnValues = [];
@@ -39,33 +62,27 @@ abstract class AbstractModel
         return $columnValues;
     }
 
-    public function query(string $query = "", array $binds = [], bool $fetchAll = true): array
+    /**
+     * Create a new SelectStatement instance for building SELECT queries.
+     *
+     * @param string $columns The columns to select (default is "*").
+     *
+     * @return SelectStatement A SelectStatement instance for building SELECT queries.
+     */
+    public function select(string $columns = "*"): SelectStatement
     {
-        $data = $this->database->dataPrepare($query, $binds, $fetchAll);
-        return $data;
+        return new SelectStatement($columns, $this->tableName, $this->database);
     }
 
-    public function selectAll(string $columns = '*', bool $fetchAll = true): array
-    {
-        $query = "SELECT $columns FROM $this->tableName";
-        $data = $this->database->dataQuery($query, $fetchAll);
-
-        return $data;
-    }
-
-    public function selectWhere(
-        string $condition = "1 = 1",
-        array $conditionBinds = [],
-        string $columns = "*",
-        bool $fetchAll = true
-    ): array {
-        $query = "SELECT $columns FROM $this->tableName WHERE $condition";
-        $data = $this->database->dataPrepare($query, $conditionBinds, $fetchAll);
-
-        return $data;
-    }
-
-    public function insert($object = [], $onDuplicateKeys = false): bool
+    /**
+     * Insert data into the table.
+     *
+     * @param array $object An associative array of column values to insert.
+     * @param bool $onDuplicateKeys Whether to perform an "INSERT ... ON DUPLICATE KEY UPDATE" operation.
+     *
+     * @return bool True if the insert operation was successful, otherwise false.
+     */
+    public function insert(array $object = [], bool $onDuplicateKeys = false): bool
     {
         $columnNames = array_keys($object);
         $columns = implode(", ", $columnNames);
@@ -101,7 +118,14 @@ abstract class AbstractModel
         return $result;
     }
 
-    public function update($object = []): bool
+    /**
+     * Update data in the table.
+     *
+     * @param array $object An associative array of column values to update.
+     *
+     * @return bool True if the update operation was successful, otherwise false.
+     */
+    public function update(array $object = []): bool
     {
         $columnNames = array_keys($object);
         $enumeratedBinds = $this->enumerateColumnValues($object);
@@ -122,11 +146,19 @@ abstract class AbstractModel
         return $result;
     }
 
-    public function delete($condition = '0 > 1', $conditionBinds = []): bool
+    /**
+     * Delete data from the table based on a condition.
+     *
+     * @param string $condition The WHERE condition for the DELETE operation.
+     * @param array $conditionBinds An associative array of parameter bindings for the condition.
+     *
+     * @return bool True if the delete operation was successful, otherwise false.
+     */
+    public function delete(string $condition = '0 > 1', array $conditionBinds = []): bool
     {
-        $cmd = "DELETE FROM $this->tableName WHERE $condition";
+        $query = "DELETE FROM $this->tableName WHERE $condition";
 
-        $result = $this->database->directPrepare($cmd, $conditionBinds);
+        $result = $this->database->directPrepare($query, $conditionBinds);
 
         return $result;
     }

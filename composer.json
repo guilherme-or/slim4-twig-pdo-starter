@@ -7,7 +7,6 @@
         "php-di/php-di": "^6.4",
         "ext-json": "*",
         "voku/anti-xss": "^4.1",
-        "owasp/csrf-protector-php": "^1.0",
         "vlucas/phpdotenv": "^5.5"
     },
     "autoload": {
