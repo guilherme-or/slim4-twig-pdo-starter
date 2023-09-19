@@ -47,7 +47,7 @@ class Session
      * @param string $key   The key under which to store the value.
      * @param mixed  $value The value to store in the session.
      */
-    public function set(string $key, mixed $value): void
+    public function set(string $key, $value): void
     {
         $_SESSION[$key] = $value;
     }
@@ -60,7 +60,7 @@ class Session
      *
      * @return mixed The session value or the default value if the key does not exist.
      */
-    public function get(string $key = null, mixed $defaultValue = null): mixed
+    public function get(string $key = null, $defaultValue = null)
     {
         if ($key === null) {
             return $_SESSION; // Return all session data if no key is specified

@@ -6,7 +6,7 @@ namespace App\Utils\Statements;
 
 use App\Utils\Database;
 
-class SelectStatement
+class SelectStatement implements FetchStatement
 {
     private Database $database;
     private string $selectQuery;
